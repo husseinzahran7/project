@@ -11,28 +11,33 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isInitialSetup, setIsInitialSetup] = useState(false);
+  const [isInitialSetup, setIsInitialSetup] = useState(true); // Set default to true
   const [showPassword, setShowPassword] = useState(false);
   const { login, user } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
-    // Check if there are any admin users
-    async function checkAdminExists() {
-      try {
-        const { data, error } = await supabase
-          .from('user_roles')
-          .select('id')
-          .eq('role', 'admin')
-          .single();
-        
-        setIsInitialSetup(!data && !error);
-      } catch (err) {
-        console.error('Error checking admin status:', err);
-      }
-    }
     checkAdminExists();
   }, []);
+
+  async function checkAdminExists() {
+    try {
+      const { count, error } = await supabase
+        .from('user_roles')
+        .select('*', { count: 'exact', head: true });
+      
+      if (error) {
+        console.error('Error checking admin status:', error);
+        return;
+      }
+      
+      console.log('Admin check result:', { count });
+      setIsInitialSetup(count === 0);
+    } catch (err) {
+      console.error('Error in checkAdminExists:', err);
+      setError('Error checking admin status: ' + err.message);
+    }
+  }
 
   // Redirect to dashboard if already logged in
   if (user) {
@@ -46,30 +51,15 @@ export default function Login() {
       setIsLoading(true);
       
       if (isInitialSetup) {
-        // Create initial admin user
+        console.log('Creating initial admin user...');
         await adminApi.initializeAdmin(email, password);
-        // Log in with the newly created admin account
+        console.log('Admin user created, logging in...');
         await login(email, password);
       } else {
-        const { data, error } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', 'ba856be7-ed23-4120-b250-cec61e066a5b')
-          .single();
-
-        if (!data) {
-          // If no role exists, set as admin (only for your specific user ID)
-          await supabase
-            .from('user_roles')
-            .insert([{
-              user_id: 'ba856be7-ed23-4120-b250-cec61e066a5b',
-              role: 'admin'
-            }]);
-        }
-        
         await login(email, password);
       }
     } catch (err) {
+      console.error('Error in handleSubmit:', err);
       setError('Failed to sign in: ' + err.message);
     } finally {
       setIsLoading(false);

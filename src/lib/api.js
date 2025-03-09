@@ -4,13 +4,23 @@ import { supabase } from './supabase';
 export const adminApi = {
   async initializeAdmin(email, password) {
     try {
-      // Create the admin user
+      // Create the admin user with auto confirm
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: window.location.origin,
+          data: {
+            role: 'admin'
+          }
+        }
       });
       
       if (authError) throw authError;
+
+      if (!authData.user) {
+        throw new Error('Failed to create user');
+      }
 
       // Directly insert the admin role
       const { error: roleError } = await supabase
@@ -21,6 +31,7 @@ export const adminApi = {
         }]);
 
       if (roleError) {
+        console.error('Error setting admin role:', roleError);
         // If insertion fails, try updating instead
         const { error: updateError } = await supabase
           .from('user_roles')
@@ -29,6 +40,14 @@ export const adminApi = {
 
         if (updateError) throw updateError;
       }
+
+      // Sign in immediately after creation
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (signInError) throw signInError;
 
       return { success: true, user: authData.user };
     } catch (error) {

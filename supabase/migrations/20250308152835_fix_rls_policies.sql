@@ -1,19 +1,22 @@
 -- Drop existing policies that might conflict
 DROP POLICY IF EXISTS "Only admins can manage user roles" ON user_roles;
+DROP POLICY IF EXISTS "Admins can manage user roles" ON user_roles;
+DROP POLICY IF EXISTS "Users can read user roles" ON user_roles;
 
--- Create new policies for user_roles
-CREATE POLICY "Admins can manage user roles"
-  ON user_roles
-  USING (
-    EXISTS (
-      SELECT 1 FROM user_roles
-      WHERE user_id = auth.uid()
-      AND role = 'admin'
-    )
-  );
-
-CREATE POLICY "Users can read user roles"
+-- Create new policies for user_roles with fixed permissions
+CREATE POLICY "Enable read access for all users"
   ON user_roles FOR SELECT
+  TO authenticated
+  USING (true);
+
+CREATE POLICY "Enable insert for authentication only"
+  ON user_roles FOR INSERT
+  TO authenticated
+  WITH CHECK (true);
+
+CREATE POLICY "Enable update for authenticated users only"
+  ON user_roles FOR UPDATE
+  TO authenticated
   USING (true);
 
 -- Update service policies

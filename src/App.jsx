@@ -40,7 +40,7 @@ function App() {
           </Route>
 
           {/* Public Routes */}
-          <Route element={<PublicLayout />}>
+          <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
             <Route path="services" element={<Services />} />
