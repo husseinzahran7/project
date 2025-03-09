@@ -1,8 +1,27 @@
 #root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+.text-gradient {
+  @apply bg-gradient-to-r from-primary-600 to-secondary-500 bg-clip-text text-transparent;
+}
+
+.bg-gradient {
+  @apply bg-gradient-to-r from-primary-600 to-primary-700;
+}
+
+.bg-gradient-secondary {
+  @apply bg-gradient-to-r from-secondary-400 to-secondary-500;
+}
+
+.card-hover {
+  @apply transition-transform duration-300 hover:-translate-y-1;
 }
 
 .logo {

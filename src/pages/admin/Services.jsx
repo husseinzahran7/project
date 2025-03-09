@@ -84,39 +84,39 @@ export default function AdminServices() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Manage Services</h1>
+      <h1 className="text-2xl font-bold mb-6 text-text-primary">Manage Services</h1>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md mb-8">
+      <form onSubmit={handleSubmit} className="bg-card p-6 rounded-lg shadow-md mb-8">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Title</label>
+            <label className="block text-sm font-medium text-text-muted">Title</label>
             <input
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+              className="mt-1 block w-full rounded-md bg-background border-primary-500/20 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-text-primary"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <label className="block text-sm font-medium text-text-muted">Description</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+              className="mt-1 block w-full rounded-md bg-background border-primary-500/20 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-text-primary"
               rows={3}
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-text-muted">
               Features (one per line)
             </label>
             <textarea
               value={formData.features}
               onChange={(e) => setFormData({ ...formData, features: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+              className="mt-1 block w-full rounded-md bg-background border-primary-500/20 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-text-primary"
               rows={4}
               required
             />
@@ -131,30 +131,30 @@ export default function AdminServices() {
       </form>
 
       {/* List */}
-      <div className="bg-white rounded-lg shadow-md">
-        <ul className="divide-y divide-gray-200">
+      <div className="bg-card rounded-lg shadow-md">
+        <ul className="divide-y divide-primary-500/20">
           {services.map((service) => (
             <li key={service.id} className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="text-lg font-semibold">{service.title}</h3>
-                  <p className="mt-1 text-gray-600">{service.description}</p>
+                  <h3 className="text-lg font-semibold text-text-primary">{service.title}</h3>
+                  <p className="mt-1 text-text-muted">{service.description}</p>
                   <ul className="mt-2 list-disc list-inside">
                     {service.features.map((feature, index) => (
-                      <li key={index} className="text-gray-600">{feature}</li>
+                      <li key={index} className="text-text-muted">{feature}</li>
                     ))}
                   </ul>
                 </div>
                 <div className="flex space-x-2">
                   <button
                     onClick={() => handleEdit(service)}
-                    className="text-blue-600 hover:text-blue-800"
+                    className="text-primary-500 hover:text-primary-400"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(service.id)}
-                    className="text-red-600 hover:text-red-800"
+                    className="text-primary-500 hover:text-primary-400"
                   >
                     Delete
                   </button>
